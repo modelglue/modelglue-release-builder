@@ -71,7 +71,7 @@
         <echo>This is how to use this file:</echo>
     </target>
 
-    <target name="release" depends="workingDirectory,sourceProperties" description="Builds a release of the ModelGlue Framework">
+    <target name="release" depends="clean,workingDirectory,sourceProperties" description="Builds a release of the ModelGlue Framework">
 
         <!-- Clone repo into a temporary location -->
         <echo>Cloning repo ${source.git.url} into temporary location ${local.exportDirectory}</echo>
@@ -81,6 +81,12 @@
         <echo>Switching temporary repo to ${source.git.branch} branch</echo>
         <git-checkout-local branch="${source.git.branch}" dir="${local.exportDirectory}" />
 
+        <!-- Calculate version number for build -->
+        <echo>Determining revision number and updating version properties</echo>
+        <!--<antcall target="versionProperties" /> -->
+        <git-describe tag="build" dir="${local.exportDirectory}" />
+        <property file="${profileDirectory}/version.properties" />
+
         <!-- Create the new release branch -->
         <echo>Creating a new branch named release-${version.number}</echo>
         <git-branch dir="${local.exportDirectory}" branch="release-${version.number}" />
@@ -89,9 +95,6 @@
         <echo>Checking out newly created branch release-${version.number}</echo>
         <git-checkout-local dir="${local.exportDirectory}"  branch="release-${version.number}" />
 
-        <!-- Calculate version number for build -->
-        <echo>Determining revision number an updating version properties</echo>
-        <antcall target="versionProperties" />
 
         <!-- Do string replacements -->
         <echo>Replacing version number, version label and copyright string tokens</echo>
@@ -104,6 +107,18 @@
         <!-- Create the new tag -->
         <echo>Creating new tag named release-${version.number}</echo>
         <git-tag dir="${local.exportDirectory}" tagName="release-${version.number}" />
+
+        <!-- Push tag and branch to origin -->
+        <echo>Pushing release branch and tag to ${source.git.url}</echo>
+
+        <!-- Clean up -->
+        <antcall target="clean" />
+    </target>
+
+    <target name="clean" depends="checkExportDirectoryAvailability" if="exportDirectoryAvailable">
+        <!-- Delete temporary build location -->
+        <echo>Cleaning up working directory ${local.workingDirectory}</echo>
+        <delete dir="${local.workingDirectory}" />
     </target>
 
 

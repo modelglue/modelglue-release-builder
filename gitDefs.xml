@@ -13,8 +13,8 @@
         <attribute name="failerror" default="false" />
         <element name="args" optional="true" />
         <sequential>
-            <echo message="git dir @{dir}" />
-            <echo message="git @{command}" />
+            <!--<echo message="git dir @{dir}" />
+            <echo message="git @{command}" />-->
             <exec executable="git" dir="@{dir}" failonerror="@{failerror}">
                 <arg line="@{command} @{options}" />
                 <args />
