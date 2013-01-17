@@ -105,11 +105,13 @@
         <git-commit-with-message dir="${local.exportDirectory}" message="Updating revision numbers and copyrights" options="-a" />
 
         <!-- Create the new tag -->
-        <echo>Creating new tag named release-${version.number}</echo>
-        <git-tag dir="${local.exportDirectory}" tagName="release-${version.number}" />
+        <echo>Creating new tag named release-${version.name}</echo>
+        <input message="Please enter a description for this tag:" addproperty="commitMessage" />
+        <git-tag dir="${local.exportDirectory}" tagName="release-${version.name}" options="-a" message="${commitMessage}" />
 
         <!-- Push tag and branch to origin -->
         <echo>Pushing release branch and tag to ${source.git.url}</echo>
+        <git-push-tags dir="${local.exportDirectory}" />
 
         <!-- Clean up -->
         <antcall target="clean" />

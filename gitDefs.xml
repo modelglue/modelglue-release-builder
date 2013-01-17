@@ -83,6 +83,20 @@
         </sequential>
     </macrodef>
 
+    <macrodef name="git-push-tags">
+        <attribute name="dir" />
+        <attribute name="remote" default="origin" />
+        <attribute name="failerror" default="false" />
+        <sequential>
+            <git command="push" dir="@{dir}" options="--tags" failerror="@{failerror}" >
+                <args>
+                    <arg value="@{remote}" />
+                </args>
+            </git>
+        </sequential>
+
+    </macrodef>
+
     <macrodef name="git-push-to-branch">
         <attribute name="branch" />
         <attribute name="remoteRepositoryName" />
@@ -220,12 +234,14 @@
 
     <macrodef name="git-tag">
         <attribute name="tagName" />
+        <attribute name="message" />
         <attribute name="dir" />
         <attribute name="options" default="" />
         <attribute name="failerror" default="false" />
         <sequential>
             <git command="tag" dir="@{dir}" options="@{options}" failerror="@{failerror}" >
                 <args>
+                    <arg value="-m @{message}" />
                     <arg value="@{tagName}" />
                 </args>
             </git>
