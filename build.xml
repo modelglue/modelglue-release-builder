@@ -4,30 +4,6 @@
         This buildfile defines properties and targets for downloading Model-Glue builds from SVN
         and packaging them as Zip files for distribution.
 
-        INSTRUCTIONS FOR ECLIPSE USERS: BUILD A MODEL-GLUE DISTRIBUTION ZIP IN FIVE STEPS
-
-        0. Make sure you have Eclipse installed. (I didn't really have to tell you that, right?)
-
-        1. Download and extract the zip file for SvnAnt (http://subclipse.tigris.org/svnant.html)
-        and copy all the files in the SvnAnt lib directory to the modelgluedistributionfiles/lib directory.
-
-        2. Make sure you have either the Subclipse or Subversive plugin installed in Eclipse.
-
-        Subclipse home: http://subclipse.tigris.org/
-        Subversive home: http://www.eclipse.org/subversive/
-
-        3. Copy the local.properties.example file and save it as local.properties. Open local.properties in a text editor
-        and edit the local.profile= setting if needed:
-
-        * To build a distribution zip for the latest official release, use local.profile=latestRelease
-        * To build a distribution zip for the latest revision in trunk, use local.profile=bleedingEdge
-
-        4. Open the Ant view in Eclipse, click the "Add Buildfiles" button, and add modelgluedistributionfiles/build.xml.
-        The "Model-Glue Distribution" buildfile should now appear.
-
-        5. Select the "zip" target under the buildfile, and click the "Run the Selected Target" button on the Ant View bar.
-
-
         INSTRUCTIONS FOR ANT COMMAND-LINE USERS: BUILD A MODEL-GLUE DISTRIBUTION ZIP IN FIVE STEPS
 
         0. Make sure you have Apache Ant installed. (I didn't really have to tell you that, right?)
@@ -35,8 +11,7 @@
         1. Download and extract the zip file for SvnAnt (http://subclipse.tigris.org/svnant.html)
         and copy all the files in the SvnAnt lib directory to the modelgluedistributionfiles/lib directory.
 
-        2. Make sure you have a command-line SVN client installed.	For Windows users,
-        the Slik SVN client distribution is recommended (http://www.sliksvn.com/en/download/).
+        2. Make sure you have a command-line Git client installed.
 
         3. Copy the local.properties.example file and save it as local.properties. Open local.properties in a text editor
         and edit the local.profile= setting if needed:
@@ -44,9 +19,10 @@
         * To build a distribution zip for the latest official release, use local.profile=latestRelease
         * To build a distribution zip for the latest revision in trunk, use local.profile=bleedingEdge
 
-        4. Open a command-line shell and switch to the modelgluedistributionfiles directory.
+        4. Open a command-line shell and switch to the directory where you cloned the modelglue-release-builder repository.
 
-        5. Run the following command: ant zip
+        5. Run the following command: ant release (You must have write access to the Git repository to push the new build or
+        the last step in the process will fail
 
         FURTHER INFORMATION
 
@@ -57,7 +33,7 @@
 
     </description>
 
-    <!-- Default profile is bleedingEdge (i.e. latest copy from SVN). Used only if local.profile is not set in local.properties -->
+    <!-- Default profile is bleedingEdge (i.e. latest copy from develop branch in Git). Used only if local.profile is not set in local.properties -->
     <property name="defaultProfile" value="bleedingEdge" />
 
     <!-- IMPORT EXTERNAL ANT DEFINITIONS -->
@@ -110,11 +86,16 @@
         <git-tag dir="${local.exportDirectory}" tagName="release-${version.name}" options="-a" message="${commitMessage}" />
 
         <!-- Push tag and branch to origin -->
+
+        <!--
         <echo>Pushing release branch and tag to ${source.git.url}</echo>
         <git-push-tags dir="${local.exportDirectory}" />
+        -->
 
         <!-- Clean up -->
+        <!--
         <antcall target="clean" />
+        -->
     </target>
 
     <target name="clean" depends="checkExportDirectoryAvailability" if="exportDirectoryAvailable">
